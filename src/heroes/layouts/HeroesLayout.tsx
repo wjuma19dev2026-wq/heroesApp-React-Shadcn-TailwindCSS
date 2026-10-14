@@ -1,10 +1,9 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router-dom'
 
 export const HeroesLayout = () => {
   return (
     <>
-      <p>HeroesLayout works!</p>
       <Outlet />
     </>
-  );
-};
+  )
+}
