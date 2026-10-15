@@ -4,18 +4,22 @@ import { HeroStats } from '@/heroes/components/HeroStats/HeroStats'
 import { HeroesGrid } from '@/heroes/components/HeroesGrid/HeroesGrid'
 import { useState } from 'react'
 import { CustomPagination } from '@/heroes/components/CustomPagination/CustomPagination'
+import { CustomBreadcrumb } from '@/heroes/components/CustomBreadcrumb/CustomBreadcrumb'
 
 export const HomePage = () => {
   const [tabValue, setTabValue] = useState('all')
 
   return (
-    <div className="min-h-screen from-slate-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen  bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <CustomJumbotron
           title="Universo de SuperHeroes"
           subTitle="Descubre, explora y administra super heroes y villanos."
         />
+
+        {/*Breadcrump*/}
+        <CustomBreadcrumb />
 
         {/* Stats Dashboard */}
         <HeroStats />
