@@ -3,7 +3,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Link, useLocation } from 'react-router-dom'
@@ -13,7 +12,7 @@ export const CustomBreadcrumb = () => {
   const location = useLocation()
 
   const pathSegment = location.pathname.split('/').filter((s) => s !== '')
-  console.log(pathSegment)
+  // console.log(pathSegment)
 
   return (
     <Breadcrumb className="mb-5">

@@ -1,13 +1,27 @@
+import { useState } from 'react'
+import { queryOptions, useQuery } from '@tanstack/react-query'
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CustomJumbotron } from '@/heroes/components/CustomJumbotron/CustomJumbotron'
 import { HeroStats } from '@/heroes/components/HeroStats/HeroStats'
 import { HeroesGrid } from '@/heroes/components/HeroesGrid/HeroesGrid'
-import { useState } from 'react'
-import { CustomPagination } from '@/heroes/components/CustomPagination/CustomPagination'
+
 import { CustomBreadcrumb } from '@/heroes/components/CustomBreadcrumb/CustomBreadcrumb'
+import { CustomPagination } from '@/heroes/components/CustomPagination/CustomPagination'
+
+import { getHeroesByPage } from '@/heroes/actions/get-heroes-by-page'
 
 export const HomePage = () => {
   const [tabValue, setTabValue] = useState('all')
+
+  const groupOptions = () =>
+    queryOptions({
+      queryKey: ['heroes'],
+      queryFn: () => getHeroesByPage(),
+      staleTime: 1000 * 60 * 5,
+    })
+
+  const { data: heroResponse } = useQuery(groupOptions())
 
   return (
     <div className="min-h-screen  bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
@@ -42,19 +56,19 @@ export const HomePage = () => {
 
           <TabsContent value="all">
             Todos los personajes de los heroes.
-            <HeroesGrid />
+            {heroResponse && <HeroesGrid heroResponse={heroResponse} />}
           </TabsContent>
           <TabsContent value="favorites">
             Todos los heroes favoritos.
-            <HeroesGrid />
+            {/*<HeroesGrid />*/}
           </TabsContent>
           <TabsContent value="heroes">
             Todos los heroes.
-            <HeroesGrid />
+            {/*<HeroesGrid />*/}
           </TabsContent>
           <TabsContent value="villains">
             Todos los villanos.
-            <HeroesGrid />
+            {/*<HeroesGrid />*/}
           </TabsContent>
         </Tabs>
 
