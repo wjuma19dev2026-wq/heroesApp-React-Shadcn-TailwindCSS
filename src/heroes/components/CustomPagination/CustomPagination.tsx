@@ -1,5 +1,7 @@
 import { Button } from '@/components/ui/button'
+import { parsePageParam } from '@/lib/parse-page-param'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
 
 interface Props {
   totalPage: number
@@ -7,10 +9,27 @@ interface Props {
 }
 
 export const CustomPagination = ({ totalPage }: Props) => {
-  const page: number = 6
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const page: number = parsePageParam(searchParams.get('page'))
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPage || newPage === page) return
+
+    setSearchParams((params) => {
+      params.set('page', String(newPage))
+      return params
+    })
+  }
+
   return (
     <div className="flex items-center justify-center space-x-2">
-      <Button disabled={page === 1} variant="outline" size="sm">
+      <Button
+        disabled={page === 1}
+        onClick={() => handlePageChange(page - 1)}
+        variant="outline"
+        size="sm"
+      >
         <ChevronLeft className="h-4 w-4" />
         Previo
       </Button>
@@ -19,6 +38,7 @@ export const CustomPagination = ({ totalPage }: Props) => {
         return (
           <Button
             key={index}
+            onClick={() => handlePageChange(index + 1)}
             variant={page === index + 1 ? 'default' : 'outline'}
             size="sm"
           >
@@ -27,7 +47,12 @@ export const CustomPagination = ({ totalPage }: Props) => {
         )
       })}
 
-      <Button disabled={page === totalPage} variant="outline" size="sm">
+      <Button
+        disabled={page === totalPage}
+        onClick={() => handlePageChange(page + 1)}
+        variant="outline"
+        size="sm"
+      >
         Proximo
         <ChevronRight className="h-4 w-4" />
       </Button>

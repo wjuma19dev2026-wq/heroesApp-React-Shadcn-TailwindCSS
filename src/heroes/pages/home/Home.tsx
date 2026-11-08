@@ -26,7 +26,7 @@ export const HomePage = () => {
 
   const groupOptions = () =>
     queryOptions({
-      queryKey: ['heroes'],
+      queryKey: ['heroes', { page, limit, selectedTab }],
       queryFn: () => getHeroesByPage(page, limit),
       staleTime: 1000 * 60 * 5,
     })
@@ -117,7 +117,7 @@ export const HomePage = () => {
         </Tabs>
 
         {/* Pagination */}
-        <CustomPagination totalPage={8} />
+        <CustomPagination totalPage={heroResponse?.pages ?? Number('1')} />
       </div>
     </div>
   )
