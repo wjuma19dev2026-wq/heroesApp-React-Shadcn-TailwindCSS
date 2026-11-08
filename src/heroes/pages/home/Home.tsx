@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { queryOptions, useQuery } from '@tanstack/react-query'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CustomJumbotron } from '@/heroes/components/CustomJumbotron/CustomJumbotron'
@@ -10,8 +9,9 @@ import { HeroesGrid } from '@/heroes/components/HeroesGrid/HeroesGrid'
 import { CustomBreadcrumb } from '@/heroes/components/CustomBreadcrumb/CustomBreadcrumb'
 import { CustomPagination } from '@/heroes/components/CustomPagination/CustomPagination'
 
-import { getHeroesByPage } from '@/heroes/actions/get-heroes-by-page'
 import { parsePageParam } from '@/lib/parse-page-param'
+import { useHeroSummary } from '@/heroes/hooks/useHeroSummary'
+import { useHeroesByPage } from '@/heroes/hooks/useHeroesByPage'
 
 export const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -24,14 +24,8 @@ export const HomePage = () => {
     return validTabs.includes(activeUrlParam) ? activeUrlParam : 'all'
   }, [activeUrlParam])
 
-  const groupOptions = () =>
-    queryOptions({
-      queryKey: ['heroes', { page, limit, selectedTab }],
-      queryFn: () => getHeroesByPage(page, limit),
-      staleTime: 1000 * 60 * 5,
-    })
-
-  const { data: heroResponse } = useQuery(groupOptions())
+  const { data: heroResponse } = useHeroesByPage({ page, limit })
+  const { data: heroSummary } = useHeroSummary()
 
   return (
     <div className="min-h-screen from-slate-50 via-blue-50 to-purple-50">
@@ -60,7 +54,7 @@ export const HomePage = () => {
                 })
               }
             >
-              All Characters (16)
+              All Characters ({heroSummary?.totalHeroes})
             </TabsTrigger>
             <TabsTrigger
               value="favorites"
@@ -83,7 +77,7 @@ export const HomePage = () => {
                 })
               }
             >
-              Heroes (12)
+              Heroes ({heroSummary?.heroCount})
             </TabsTrigger>
             <TabsTrigger
               value="villains"
@@ -94,12 +88,11 @@ export const HomePage = () => {
                 })
               }
             >
-              Villains (2)
+              Villains ({heroSummary?.villainCount})
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="all">
-            Todos los personajes de los heroes.
+          <TabsContent value="all" className="mt-5">
             {heroResponse && <HeroesGrid heroResponse={heroResponse} />}
           </TabsContent>
           <TabsContent value="favorites">
