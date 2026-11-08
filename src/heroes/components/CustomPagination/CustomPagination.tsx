@@ -22,6 +22,26 @@ export const CustomPagination = ({ totalPage }: Props) => {
     })
   }
 
+  const pages: (number | 'ellipsis')[] = []
+
+  if (totalPage <= 7) {
+    pages.push(...Array.from({ length: totalPage }, (_, index) => index + 1))
+  } else if (page <= 4) {
+    pages.push(1, 2, 3, 4, 5, 'ellipsis', totalPage)
+  } else if (page >= totalPage - 3) {
+    pages.push(
+      1,
+      'ellipsis',
+      totalPage - 4,
+      totalPage - 3,
+      totalPage - 2,
+      totalPage - 1,
+      totalPage
+    )
+  } else {
+    pages.push(1, 'ellipsis', page - 1, page, page + 1, 'ellipsis', totalPage)
+  }
+
   return (
     <div className="flex items-center justify-center space-x-2">
       <Button
@@ -34,15 +54,19 @@ export const CustomPagination = ({ totalPage }: Props) => {
         Previo
       </Button>
 
-      {Array.from({ length: totalPage }).map((_, index) => {
+      {pages.map((item, index) => {
+        if (item === 'ellipsis') {
+          return <span key={`ellipsis-${index}`}>…</span>
+        }
+
         return (
           <Button
-            key={index}
-            onClick={() => handlePageChange(index + 1)}
-            variant={page === index + 1 ? 'default' : 'outline'}
+            key={item}
+            onClick={() => handlePageChange(item)}
+            variant={page === item ? 'default' : 'outline'}
             size="sm"
           >
-            {index + 1}
+            {item}
           </Button>
         )
       })}
