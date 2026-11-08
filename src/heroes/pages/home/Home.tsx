@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -10,11 +11,13 @@ import { CustomBreadcrumb } from '@/heroes/components/CustomBreadcrumb/CustomBre
 import { CustomPagination } from '@/heroes/components/CustomPagination/CustomPagination'
 
 import { getHeroesByPage } from '@/heroes/actions/get-heroes-by-page'
-import { useSearchParams } from 'react-router-dom'
+import { parsePageParam } from '@/lib/parse-page-param'
 
 export const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const activeUrlParam = searchParams.get('tab') ?? 'all'
+  const page = parsePageParam(searchParams.get('page') ?? '1')
+  const limit = Number(searchParams.get('limit') ?? '6')
 
   const selectedTab = useMemo(() => {
     const validTabs = ['all', 'favorites', 'heroes', 'villains']
@@ -24,14 +27,14 @@ export const HomePage = () => {
   const groupOptions = () =>
     queryOptions({
       queryKey: ['heroes'],
-      queryFn: () => getHeroesByPage(),
+      queryFn: () => getHeroesByPage(page, limit),
       staleTime: 1000 * 60 * 5,
     })
 
   const { data: heroResponse } = useQuery(groupOptions())
 
   return (
-    <div className="min-h-screen  bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen from-slate-50 via-blue-50 to-purple-50">
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <CustomJumbotron
